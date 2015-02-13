@@ -1,0 +1,21 @@
+hiera variables used in set of manifests
+
+global:
+fetch:destination: where files are downloaded for later use! everything up to packagename
+
+
+
+packages versions:
+
+firefox:version
+thunderbird:version
+ccleaner:version
+filezilla:version
+flash:version
+foxit:version
+foxit:url   !!! note that this one needs URL as well as version to function
+libreoffice:version
+greenshot:version
+notepadplusplus:version
+ultravnc:version
+skype:version
