@@ -1,4 +1,4 @@
-class 'firefoxconfig' {
+class firefoxconfig {
   if $::architecture = 'x86' {
   file_line { 'hideup':
     path => '%PROGRAMFILESDIR%/Mozilla Firefox/mozilla.cfg',

@@ -3,8 +3,10 @@ hiera variables used in set of manifests
 global:
 fetch:destination: where files are downloaded for later use! everything up to packagename
 
-
-
+config: 
+ntp:server:  defining windows ntp lookup
+thunderbird:policyjs: policy.js line
+thunderbird:config: thunderbird config line
 packages versions:
 
 firefox:version
