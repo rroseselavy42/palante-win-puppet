@@ -1,3 +1,6 @@
+# Class: ultravncconfig
+# configures ultravnc for you!
+# uses ultravnc::passwd1 and passwd2 as hiera lookups
 class ultravncconfig {
 
 
@@ -7,7 +10,7 @@ class ultravncconfig {
     section => 'ultravnc',
     path    => '%PROGRAMFILESDIR%/uvnc bvba/UltraVNC/ultravnc.ini',
     setting => 'passwd',
-    value   => hiera(ultravnc::passwd1),
+    value   => hiera('ultravnc::passwd1'),
 
     }
   ini_setting {'passwd2':
@@ -18,18 +21,20 @@ class ultravncconfig {
     value   => hiera('ultravnc::passwd2'),
     }
   ini_setting {'UseRegistry':
-    ensure   => present,
-    section  => 'admin',
-    path     =>'%PROGRAMFILESDIR%/uvnc bvba/UltraVNC/ultravnc.ini',
-     setting => 'UseRegistry',
-     value => 0,}    
-  ini_setting {'MSLogonRequired':
-      ensure => present,
-      section=> 'admin',
-      path =>'%PROGRAMFILESDIR%/uvnc bvba/UltraVNC/ultravnc.ini',
-      setting => 'MSLogonRequired',
-      value => 0,
-     }
+    ensure  => present,
+    section => 'admin',
+    path    =>'%PROGRAMFILESDIR%/uvnc bvba/UltraVNC/ultravnc.ini',
+    setting => 'UseRegistry',
+    value   => 0,
+  }
+  
+    ini_setting {'MSLogonRequired':
+    ensure  => present,
+    section => 'admin',
+    path    =>'%PROGRAMFILESDIR%/uvnc bvba/UltraVNC/ultravnc.ini',
+    setting => 'MSLogonRequired',
+    value   => 0,
+    }
   ini_setting {'DebugMode':
       ensure => present,
       section=> 'admin',
