@@ -18,7 +18,9 @@ $installsource = hiera('install:source')
 class { 'firefox:install':
   $firefoxversion = hiera('firefox:version')
   package {"Mozilla Firefox ${firefoxversion} (x86 en-US)": #seriously the package name ughhhhhhhhhh use metadata
-    ensure => installed,
-    source => "${installsource}/firefox/Firefox Setup ${firefoxversion}.exe",
+    ensure  => installed,
+    source  => "${installsource}/firefox/Firefox Setup ${firefoxversion}.exe",
     install_options => ['-ms'], 
     uninstall_options => ['/S'], }
+#jessie you will hate yourself someday for the way you are writing this
+#please think about your future self here.
