@@ -2,16 +2,26 @@
 class thunderbirdconfig {
   $thunderbirdpolicyjs = hiera('thunderbird:policyjs')
   if $::architecture == 'x64' {
-    $installpath = '%PROGRAMFILES32%/Mozilla Thunderbird'
-  }
-  else {
-    $installpath = '%PROGRAMFILES%/Mozilla Thunderbird'
-  }
-  file_line { 'policyjs':
+    $installpath = 'C:/Program Files (x86)/Mozilla Thunderbird'
+   file_line { 'policyjs':
     path => "${installpath}/defaults/pref/policies.js", 
     line => $thunderbirdpolicyjs, }
   $thunderbirdconfig = hiera('thunderbird:config')
   file_line {'config':
     path => "${installpath}/",
     line => $thunderbirdconfig, }
+
+  }
+  else {
+    $installpath = 'C:/Program Files/Mozilla Thunderbird'
+   file_line { 'policyjs':
+    path => "${installpath}/defaults/pref/policies.js", 
+    line => $thunderbirdpolicyjs, }
+  $thunderbirdconfig = hiera('thunderbird:config')
+  file_line {'config':
+    path => "${installpath}/",
+    line => $thunderbirdconfig, }
+
+  }
+ 
   }
