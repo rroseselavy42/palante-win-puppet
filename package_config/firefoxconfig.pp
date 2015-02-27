@@ -1,7 +1,7 @@
 class firefoxconfig {
-  $hideup = "lockPref("browser.startup.homepage_override.mstone", "ignore");"
-  $nodefault = "lockPref("browser.shell.checkDefaultBrowser", false);"
-  $noupdate = "lockPref("app.update.enabled", false);"
+  $hideup = 'lockPref("browser.startup.homepage_override.mstone", "ignore");'
+  $nodefault = 'lockPref("browser.shell.checkDefaultBrowser", false);'
+  $noupdate = 'lockPref("app.update.enabled", false);'
   if $::architecture == 'x86' {
   file_line { 'hideup':
     path => 'C:/Program Files/Mozilla Firefox/mozilla.cfg,
