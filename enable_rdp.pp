@@ -3,3 +3,4 @@ class enable_rdp {
     enable => true,
     ensure => running,
     }
+}
