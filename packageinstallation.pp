@@ -16,11 +16,48 @@ class setsoftware {
 $installsource = hiera('install:source')
 
 class { 'firefox:install':
+$installsource = hiera('install:source')
   $firefoxversion = hiera('firefox:version')
   package {"Mozilla Firefox ${firefoxversion} (x86 en-US)": #seriously the package name ughhhhhhhhhh use metadata
     ensure  => installed,
+    version => $firefoxversion,
     source  => "${installsource}/firefox/Firefox Setup ${firefoxversion}.exe",
     install_options => ['-ms'], 
     uninstall_options => ['/S'], }
+  }
 #jessie you will hate yourself someday for the way you are writing this
 #please think about your future self here.
+
+class { thunderbird:install:
+$installsource = hiera('install:source')
+  $thunderbirdversion = hiera('thunderbird:version')
+  package {"Mozilla Thunderbird ${thunderbirdversion} (x86 en-US)":
+    ensure  => installed,
+    version => $thunderbirdversion,
+    source  => "${installsource}/thunderbird/Thunderbird Setup ${thunderbirdversion}.exe",
+    install_options => ['-ms'], 
+    uninstall_options => ['/S'], }
+  }
+# Class: Adobe Reader
+#
+#
+class adobeflashplugin:install {
+  $installsource = hiera('install:source')
+  $flashversion = hiera('flashplugin:version')
+  $flashversionie = hiera('flashpluginie:version')
+  $flashmajversion = hiera('flashplugin:majversion')
+  package {"Adobe Flash Player ${flashmajversion} NPAPI":
+    ensure => installed,
+    version => $flashversion,
+    source => "${installsource/adobeflashplayer/install_flash_player_${majversion}_plugin.exe",
+    install_options => ['/install']
+  }
+  package {"Adobe Flash Player ${flashmajversion} ActiveX":
+    ensure => installed,
+    version => $flashversionie,
+    source => "${installsource/adobeflashplayer/install_flash_player_${majversion}_active_x.exe",
+    install_options => ['/install']
+  }
+}
+
+
