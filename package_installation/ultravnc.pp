@@ -8,7 +8,7 @@ class ultravnc_install {
     #I could convert . to _ for this
     #I will deal with it later YOLO 
       source => "${installsource}/ultravnc/UltraVNC_1_2_05_X86_Setup.exe",
-      install_options => ['/verysilent','/norestart','loadinf="%SOFTWARE%/ultravnc/ultravnc.ini"'],
+      install_options => ['/verysilent','/no restart','loadinf="%SOFTWARE%\ultravnc\ultravnc.ini"'],
       notify => Exec['addons']
 
     }
@@ -40,11 +40,12 @@ class ultravnc_install {
       #it would be great if 
       #I could convert . to _ for this
       #I will deal with it later YOLO 
-      source => "${installsource}/ultravnc/UltraVNC_1_2_05_X64_Setup.exe",
-      install_options => ['/very silent', '/no restart', 'loadinf="%SOFTWARE%/ultravnc/ultravnc.ini"' ],
+      source => "${installsource}/ultravnc/UltraVnc_1205_X64.msi",
+      install_options => [ '/qn', '/norestart', {'SERVICE' => '1'}, {'CAD' => '1'}, {'SERVER' => '1'} ],
+      notify => Exec['addons'],
   }
       exec { 'addons':
-        command      => '%SOFTWARE%\\ultravnc\\UltraVNC_1_1_9_X64_Addons.exe /verysilent /loadinf="%SOFTWARE%\ultravnc\addons.inf',
+        command      => 'cmd.exe %SOFTWARE%\ultravnc\UltraVNC_1_1_9_X64_Addons.exe /verysilent /loadinf="%SOFTWARE%\ultravnc\addons.inf"',
         refreshonly => true,
         notify => Exec['certinstall'],
         path => $::path,
@@ -52,20 +53,20 @@ class ultravnc_install {
 
   
       exec { 'certinstall':
-        command      => '%comspec% /c %SOFTWARE%\\ultravnc\\certmgr.exe -add %SOFTWARE%\\ultravnc\\ultravnc_x64.cer -s -r localMachine trustedpublisher',
+        command      => 'cmd.exe /c %SOFTWARE%\\ultravnc\\certmgr.exe -add %SOFTWARE%\\ultravnc\\ultravnc_x64.cer -s -r localMachine trustedpublisher',
         refreshonly => true,
         path =>  $::path,
         notify => Exec['mirrordriver'],
       }
         exec { 'mirrordriver':
-    command      => '"%SOFTWARE%\\ultravnc\\devcon_x64.exe" update "C:\\Program Files\\uvnc bvba\\UltraVNC\\driver\\driver\\mv2.inf" mv_hook_display_driver2',
+    command      => 'cmd.exe "%SOFTWARE%\ultravnc\devcon_x64.exe" update "C:\Program Files\uvnc bvba\UltraVNC\driver\driver\mv2.inf" mv_hook_display_driver2',
     refreshonly => true,
     path => $::path,
     notify     => Exec['setupdrv'],
   }
   }
   exec { 'setupdrv':
-    command      => '"%PROGRAMFILESDIR%\\uvnc bvba\\UltraVNC\\driver\\setupdrv.exe" installs',
+    command      => 'cmd.exe "%PROGRAMFILESDIR%\uvnc bvba\UltraVNC\driver\setupdrv.exe" installs',
     refreshonly => true,
     path => $::path,
     notify =>  Service['uvnc_service'],
@@ -73,10 +74,11 @@ class ultravnc_install {
   service { 'uvnc_service':
     enable      => true,
     ensure      => running,
-    notify      => Exec['softwarecad']
+    notify      => Exec['softwarecad'],
+    require     => Package['UltraVnc'],
   }
   exec { 'softwarecad':
-    command      => '"%PROGRAMFILESDIR%\\uvnc bvba\\UltraVNC\\winvnc.exe" -softwarecad',
+    command      => 'cmd.exe "%PROGRAMFILESDIR%\uvnc bvba\UltraVNC\winvnc.exe" -softwarecad',
     refreshonly => true,
     path => $::path,
   }
