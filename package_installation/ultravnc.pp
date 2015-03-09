@@ -1,6 +1,7 @@
 class ultravnc_install {
   $installsource = hiera('install:source')
   $ultravncversion = hiera('ultravnc:version')
+
   if $::architecture == 'x86' {
     package {"UltraVnc":
       ensure          => $ultravncversion,
@@ -20,7 +21,7 @@ class ultravnc_install {
 
   
       exec { 'certinstall':
-        command     => 'cmd.exe /c %SOFTWARE%\\ultravnc\\certmgr.exe -add %SOFTWARE%\\ultravnc\\ultravnc_x86.cer -s -r localMachine trustedpublisher',
+        command     => 'cmd.exe /c %SOFTWARE%\ultravnc\CertMgr.Exe -add %SOFTWARE%\ultravnc\ultravnc_x86.cer -s -r localMachine trustedpublisher',
         refreshonly => true,
         path        =>  $::path,
         notify      => Exec['mirrordriver'],
@@ -31,24 +32,7 @@ class ultravnc_install {
     path        => $::path,
     notify      => Exec['setupdrv'],
   }
-  }
-  exec { 'setupdrv':
-    command     => 'cmd.exe "%PROGRAMFILESDIR%\uvnc bvba\UltraVNC\driver\setupdrv.exe" installs',
-    refreshonly => true,
-    path        => $::path,
-    notify      =>  Service['uvnc_service'],
-  }
-  service { 'uvnc_service':
-    enable  => true,
-    ensure  => running,
-    notify  => Exec['softwarecad'],
-    require => Package['UltraVnc'],
-  }
-  exec { 'softwarecad':
-    command     => 'cmd.exe "%PROGRAMFILESDIR%\uvnc bvba\UltraVNC\winvnc.exe" -softwarecad',
-    refreshonly => true,
-    path        => $::path,
-  }
+  
     }
   else {
     package {'UltraVnc':
@@ -69,7 +53,7 @@ class ultravnc_install {
 
   
       exec { 'certinstall':
-        command      => 'cmd.exe /c %SOFTWARE%\\ultravnc\\certmgr.exe -add %SOFTWARE%\\ultravnc\\ultravnc_x64.cer -s -r localMachine trustedpublisher',
+        command      => 'cmd.exe  %SOFTWARE%\ultravnc\CertMgr.Exe -add %SOFTWARE%\ultravnc\ultravnc_x64.cer -s -r localMachine trustedpublisher',
         refreshonly => true,
         path =>  $::path,
         notify => Exec['mirrordriver'],
@@ -97,6 +81,31 @@ class ultravnc_install {
     command      => 'cmd.exe "%PROGRAMFILESDIR%\uvnc bvba\UltraVNC\winvnc.exe" -softwarecad',
     refreshonly => true,
     path => $::path,
-  }
+    notify => Exec['firewall5800'],
+    
 
+  }
+  exec { 'firewall5800':
+    command  => 'netsh advfirewall firewall add rule name="vnc5800" dir=in action=allow protocol=tcp localport=5800',
+    path  => $::path,
+    refreshonly => true,
+    notify => Exec['firewall5900'],
+    }
+  exec { 'firewall5900':
+    command => 'netsh advfirewall firewall add rule name="vnc5900" dir=in action=allow protocol=tcp localport=5900',
+    path => $::path,
+    notify => Exec['firewallvnc'],
+    refreshonly => true,
+    }
+  exec { 'firewallvnc':
+    command => 'netsh advfirewall firewall add rule name="winvnc" dir=in action=allow program="C:\Program Files\uvnc bvba\UltraVNC\winvnc.exe"',
+    path => $::path,
+    notify => Exec['firewallvncviewer'],
+    refreshonly => true,
+    }
+  exec {'firewallvncviewer':
+    command => 'netsh advfirewall firewall add rule name="winvncviewer" dir=in action=allow program="C:\Program Files\uvnc bvba\UltraVNC\vncviewer.exe"',
+    path => $::path,
+    refreshonly => true,
+    }
   }

@@ -10,7 +10,7 @@ class ocsngagent_install {
 
   }
   exec { 'cacert':
-    command     => 'cmd.exe  /c copy %SOFTWARE%\ocsinventory\cacert.pem "%PROGRAMDATA%\OCS Inventory NG\Agent"',
+    command     => 'cmd.exe /c copy %SOFTWARE%\ocsinventory\cacert.pem "%PROGRAMDATA%\OCS Inventory NG\Agent"',
     path        => $::path,
     refreshonly => true,
   }

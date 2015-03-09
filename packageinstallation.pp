@@ -13,7 +13,7 @@ class setsoftware {
 
 #I've got an idea for package installation
 
-$installsource = hiera('install:source')
+#$installsource = hiera('install:source')
 
 class firefox_install {
 $installsource = hiera('install:source')
