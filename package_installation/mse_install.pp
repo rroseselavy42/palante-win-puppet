@@ -10,6 +10,7 @@ class mse_install {
         ensure          => present,
         source          => "${installsource}/microsoftsecurityessentials/mseinstall.exe",
         install_options => ['/s', '/o', '/runwgacheck'],
+        notify          => Exec['changeaclscan'],
     }}
   else {
     package { 'Microsoft Security Essentials':
@@ -44,7 +45,7 @@ class mse_install {
     value   => ScheduleTime,
     type    => dword,
     data    => '0x000003c0',
-    require => Exec['changeaclpaths'],
+    require => Exec['changeaclscan'],
 
     }
     #turn off only if idle
@@ -53,7 +54,8 @@ class mse_install {
     value   => ScanOnlyIfIdle,
     type    => dword,
     data    => '0x00000000',
-    require => Package['Microsoft Security Essentials'],
+    require => Exec['changeaclpaths'],
+
 
     }
   #exclude ultravnc
