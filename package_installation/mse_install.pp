@@ -2,6 +2,7 @@
 # installs microsoft security essentials
 # makes it scan daily. 
 class mse_install {
+
     # install mse
     $installsource = hiera('install:source')
     $mseversion = hiera('mse:version')
@@ -21,13 +22,13 @@ class mse_install {
     }
   }
   exec { 'changeaclscan':
-    command     => '%SOFTWARE%\microsoftsecurityessentials\SetACL.exe -on "hklm\software\Microsoft\Microsoft Antimalware\Scan" -ot reg -actn ace -ace "n:Administrators;p:full"',
+    command     => 'cmd.exe %SOFTWARE%\microsoftsecurityessentials\SetACL.exe -on "HKLM\Software\Microsoft\Microsoft Antimalware\Scan" -ot reg -actn ace -ace "n:Administrators;p:full"',
     refreshonly => true,
     path        =>  $::path,
     notify      => Exec['changeaclpaths'],
   }
   exec { 'changeaclpaths':
-    command     => '%SOFTWARE%\microsoftsecurityessentials\SetACL.exe -on "hklm\software\Microsoft\Microsoft Antimalware\Exclusions\Paths" -ot reg -actn ace -ace "n:Administrators;p:full"',
+    command     => 'cmd.exe %SOFTWARE%\microsoftsecurityessentials\SetACL.exe -on "HKLM\Software\Microsoft\Microsoft Antimalware\Exclusions\Paths" -ot reg -actn ace -ace "n:Administrators;p:full"',
     refreshonly => true,
     path        =>  $::path,
   }
@@ -69,13 +70,13 @@ class mse_install {
 
     }
   exec { 'restoreaclscan':
-    command     => '%SOFTWARE%\microsoftsecurityessentials\SetACL.exe -on "hklm\software\Microsoft\Microsoft Antimalware\Scan" -ot reg -actn ace -ace "n:Administrators;p:read"',
+    command     => 'cmd.exe %SOFTWARE%\microsoftsecurityessentials\SetACL.exe -on "hklm\software\Microsoft\Microsoft Antimalware\Scan" -ot reg -actn ace -ace "n:Administrators;p:read"',
     refreshonly => true,
     path        =>  $::path,
     notify      => Exec['restoreaclpaths'],
   }
   exec { 'restoreaclpaths':
-    command     => '%SOFTWARE%\microsoftsecurityessentials\SetACL.exe -on "hklm\software\Microsoft\Microsoft Antimalware\Exclusions\Paths" -ot reg -actn ace -ace "n:Administrators;p:read"',
+    command     => 'cmd.exe %SOFTWARE%\microsoftsecurityessentials\SetACL.exe -on "hklm\software\Microsoft\Microsoft Antimalware\Exclusions\Paths" -ot reg -actn ace -ace "n:Administrators;p:read"',
     refreshonly => true,
     path        =>  $::path,
 
