@@ -31,9 +31,45 @@ class mse_install {
     command     => 'cmd.exe %SOFTWARE%\microsoftsecurityessentials\SetACL.exe -on "HKLM\Software\Microsoft\Microsoft Antimalware\Exclusions\Paths" -ot reg -actn ace -ace "n:Administrators;p:full"',
     refreshonly => true,
     path        =>  $::path,
+    notify      => Exec['ScheduleDay']
   }
-  #change registry to daily scan
-  registry::value {'dailyscan':
+  exec { 'ScheduleDay':
+    command     => 'cmd.exe /C REG ADD "HKLM\Software\Microsoft\Microsoft Antimalware\Scan" /v ScheduleDay /t REG_DWORD /d 0x00000000 /f',
+    refreshonly => true,
+    path        =>  $::path,
+    notify      => Exec['ScheduleTime']
+  }
+  exec { 'ScheduleTime':
+    command     => 'cmd.exe /C REG ADD "HKLM\Software\Microsoft\Microsoft Antimalware\Scan" /v ScheduleTime /t REG_DWORD /d 0x000003c0 /f',
+    refreshonly => true,
+    path        =>  $::path,
+    notify      => Exec['excludevnc']
+  }
+  exec { 'excludevnc':
+    command     => 'cmd.exe /C REG ADD "HKLM\Software\Microsoft\Microsoft Antimalware\Exclusions\Paths" /v "C:\Program Files\uvnc bvba\UltraVNC\winvnc.exe" /t REG_DWORD /d 0x00000000  /f',
+    refreshonly => true,
+    path        =>  $::path,
+    notify      => Exec['restoreaclscan']
+  }
+  exec { 'restoreaclscan':
+    command     => 'cmd.exe %SOFTWARE%\microsoftsecurityessentials\SetACL.exe -on "hklm\software\Microsoft\Microsoft Antimalware\Scan" -ot reg -actn ace -ace "n:Administrators;p:read"',
+    refreshonly => true,
+    path        =>  $::path,
+    notify      => Exec['restoreaclpaths'],
+  }
+  exec { 'restoreaclpaths':
+    command     => 'cmd.exe %SOFTWARE%\microsoftsecurityessentials\SetACL.exe -on "hklm\software\Microsoft\Microsoft Antimalware\Exclusions\Paths" -ot reg -actn ace -ace "n:Administrators;p:read"',
+    refreshonly => true,
+    path        =>  $::path,
+
+  }
+}
+
+
+#change registry to daily scan
+  #not working due to MSE registry protection!
+  #porting wpkg package for now
+/* registry::value {'dailyscan':
     key     => 'HKLM\Software\Microsoft\Microsoft Antimalware\Scan',
     value   => ScheduleDay,
     type    => dword,
@@ -59,26 +95,5 @@ class mse_install {
 
 
     }
-  #exclude ultravnc
-  registry::value {'except_ultravnc':
-    key     => 'HKLM\Software\Microsoft\Microsoft Antimalware\Exclusions\Paths',
-    value   => 'C:\Program Files\uvnc bvba\UltraVNC\winvnc.exe',
-    type    => dword,
-    data    => '0x00000000',
-    require => Package['Microsoft Security Essentials'],
-    notify  => Exec['restoreaclscan'],
 
-    }
-  exec { 'restoreaclscan':
-    command     => 'cmd.exe %SOFTWARE%\microsoftsecurityessentials\SetACL.exe -on "hklm\software\Microsoft\Microsoft Antimalware\Scan" -ot reg -actn ace -ace "n:Administrators;p:read"',
-    refreshonly => true,
-    path        =>  $::path,
-    notify      => Exec['restoreaclpaths'],
-  }
-  exec { 'restoreaclpaths':
-    command     => 'cmd.exe %SOFTWARE%\microsoftsecurityessentials\SetACL.exe -on "hklm\software\Microsoft\Microsoft Antimalware\Exclusions\Paths" -ot reg -actn ace -ace "n:Administrators;p:read"',
-    refreshonly => true,
-    path        =>  $::path,
-
-  }
-}
+  */

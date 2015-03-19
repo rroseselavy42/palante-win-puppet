@@ -9,6 +9,7 @@ $ultravncconfigfile = 'C:/Program Files/uvnc bvba/UltraVNC/ultravnc.ini'
     setting => 'passwd',
     value   => hiera('ultravnc::passwd1'),
     notify  => Service['uvnc_service'],
+    
 
     }
   ini_setting {'passwd2':
@@ -24,5 +25,6 @@ $ultravncconfigfile = 'C:/Program Files/uvnc bvba/UltraVNC/ultravnc.ini'
     enable      => true,
     ensure      => running,
     refreshonly => true,
+
   }
 }
